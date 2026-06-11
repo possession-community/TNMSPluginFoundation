@@ -5,7 +5,7 @@
         <Copyright>© 2025 faketuna</Copyright>
         <RepositoryUrl>https://github.com/possession-community/TNMSPluginFoundation</RepositoryUrl>
         <TargetFramework>net10.0</TargetFramework>
-        <LangVersion>13</LangVersion>
+        <LangVersion>14</LangVersion>
         <ImplicitUsings>false</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>

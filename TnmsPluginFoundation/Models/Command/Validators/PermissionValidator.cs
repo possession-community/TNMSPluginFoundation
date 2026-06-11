@@ -29,7 +29,8 @@ public sealed class PermissionValidator(string requiredPermission, bool dontNoti
     /// <returns>TnmsCommandValidationResult</returns>
     public override TnmsCommandValidationResult Validate(IGameClient? client, StringCommand commandInfo)
     {
-        if (TnmsPlugin.AdminManager.ClientHasPermission(client, requiredPermission))
+        // null client = server console, which bypasses permission checks
+        if (client == null || TnmsPlugin.AdminManager.PlayerHasPermission(client.SteamId, requiredPermission))
             return TnmsCommandValidationResult.Success;
         
         if (dontNotifyWhenFailed)

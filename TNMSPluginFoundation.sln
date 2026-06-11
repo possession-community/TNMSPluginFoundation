@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TnmsPluginFoundation", "Tnm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TnmsPluginFoundation.Example", "TnmsPluginFoundation.Example\TnmsPluginFoundation.Example.csproj", "{CA5512F5-8732-4A7B-8EAB-EA90A6366932}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TnmsExtendableTargeting", "TnmsExtendableTargeting", "{DB3F7F9C-C8D0-475E-BC4A-2D12F2C961A9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

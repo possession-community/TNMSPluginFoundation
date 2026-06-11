@@ -6,21 +6,21 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Sharp.Modules.TargetingManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
-using TnmsAdministrationPlatform.Shared;
-using TnmsExtendableTargeting.Shared;
-using TnmsLocalizationPlatform.Shared;
 using TnmsPluginFoundation.Interfaces;
-using TnmsPluginFoundation.Models.Admin;
 using TnmsPluginFoundation.Models.Command;
 using TnmsPluginFoundation.Models.Logger;
 using TnmsPluginFoundation.Models.Plugin;
+using Wuling.Abstract;
+using Wuling.Abstract.Tianshi.Authority;
+using Wuling.Abstract.Tianshi.Localizer;
 
 namespace TnmsPluginFoundation;
 
-public abstract partial class TnmsPlugin: IModSharpModule, ILocalizableModule
+public abstract partial class TnmsPlugin: IModSharpModule
 {
     protected TnmsPlugin(ISharedSystem  sharedSystem,
         string         dllPath,
@@ -56,13 +56,24 @@ public abstract partial class TnmsPlugin: IModSharpModule, ILocalizableModule
     /// </summary>
     internal static ISharedSystem StaticSharedSystem => _sharedSystem;
 
-    public static IExtendableTargeting ExtendableTargeting { get; private set; } = null!;
+    /// <summary>
+    /// Wuling framework facade. (Authority / Localizer / Registry / EventBus / etc.)
+    /// </summary>
+    public static IWuling Wuling { get; private set; } = null!;
 
-    public static ITnmsPlfdAdminManager AdminManager { get; private set; } = null!;
+    /// <summary>
+    /// ModSharp official targeting module. (Sharp.Modules.TargetingManager)
+    /// </summary>
+    public static ITargetingManager TargetingManager { get; private set; } = null!;
+
+    /// <summary>
+    /// Wuling Authority. (permission / can-target / immunity / group management)
+    /// </summary>
+    public static IAuthority AdminManager { get; private set; } = null!;
 
 
-    public ITnmsLocalizer Localizer { get; private set; } = null!;
-    public ITnmsLocalizationPlatform LocalizationPlatform { get; private set; } = null!;
+    public IStringLocalizer Localizer { get; private set; } = null!;
+    public ILocalizer LocalizationPlatform { get; private set; } = null!;
     public string ModuleDirectory { get; }
 
 
@@ -239,40 +250,18 @@ public abstract partial class TnmsPlugin: IModSharpModule, ILocalizableModule
         ConVarConfigurationService.SaveAllConfigToFile();
         ConVarConfigurationService.ExecuteConfigs();
 
-        var customAdminManager = CreateAdminManager();
-        if (customAdminManager != null)
-        {
-            AdminManager = customAdminManager;
-        }
-        else
-        {
-            var adminSystem = _sharedSystem.GetSharpModuleManager()
-                .GetRequiredSharpModuleInterface<IAdminManager>(IAdminManager.ModSharpModuleIdentity).Instance;
-            AdminManager = new TnmsAdminManagerWrapper(
-                adminSystem ?? throw new InvalidOperationException(
-                    "TnmsAdministrationPlatform is not found! Make sure TnmsAdministrationPlatform is installed!"));
-        }
+        var wuling = _sharedSystem.GetSharpModuleManager()
+            .GetRequiredSharpModuleInterface<IWuling>(IWuling.Identity).Instance;
+        Wuling = wuling ?? throw new InvalidOperationException("Wuling is not found! Make sure Wuling is installed!");
 
-        var extendableTargeting = _sharedSystem.GetSharpModuleManager()
-            .GetRequiredSharpModuleInterface<IExtendableTargeting>(IExtendableTargeting.ModSharpModuleIdentity).Instance;
-        ExtendableTargeting = extendableTargeting ?? throw new InvalidOperationException("TnmsExtendableTargeting is not found! Make sure TnmsExtendableTargeting is installed!");
+        AdminManager = Wuling.Authority;
+        LocalizationPlatform = Wuling.Localizer;
+        Localizer = LocalizationPlatform.CreateStringLocalizer(ModuleDirectory);
 
-        var tnmsLocalizer = _sharedSystem.GetSharpModuleManager()
-            .GetRequiredSharpModuleInterface<ITnmsLocalizationPlatform>(
-                ITnmsLocalizationPlatform.ModSharpModuleIdentity).Instance;
-        
-        LocalizationPlatform = tnmsLocalizer ??
-                               throw new InvalidOperationException(
-                                   "TnmsLocalizationPlatform is not found! Make sure TnmsLocalizationPlatform is installed!");
-        Localizer = LocalizationPlatform.CreateStringLocalizer(this);
+        var targetingManager = _sharedSystem.GetSharpModuleManager()
+            .GetRequiredSharpModuleInterface<ITargetingManager>(ITargetingManager.Identity).Instance;
+        TargetingManager = targetingManager ?? throw new InvalidOperationException("TargetingManager is not found! Make sure Sharp.Modules.TargetingManager is installed!");
     }
-
-    /// <summary>
-    /// Override this method to provide a custom admin manager implementation. <br/>
-    /// Return null to use the default TnmsAdministrationPlatform wrapper.
-    /// </summary>
-    /// <returns>Custom ITnmsPlfdAdminManager implementation, or null for default</returns>
-    protected virtual ITnmsPlfdAdminManager? CreateAdminManager() => null;
 
     /// <summary>
     /// This method is can be used to late initialize plugin feature.

@@ -8,10 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="2.1.121" ExcludeAssets="runtime" />
-    <PackageReference Include="TnmsAdministrationPlatform.Shared" Version="0.0.4" ExcludeAssets="runtime" />
-    <PackageReference Include="TnmsExtendableTargeting.Shared" Version="0.1.4" ExcludeAssets="runtime" />
-    <PackageReference Include="TnmsLocalizationPlatform.Shared" Version="0.0.3" ExcludeAssets="runtime" />
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="2.1.123" ExcludeAssets="runtime" />
+    <PackageReference Include="ModSharp.Sharp.Modules.TargetingManager.Shared" Version="2.1.123" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Wuling\Wuling.Abstract\Wuling.Abstract.csproj" Private="false" ExcludeAssets="runtime" />
   </ItemGroup>
   
 </Project>

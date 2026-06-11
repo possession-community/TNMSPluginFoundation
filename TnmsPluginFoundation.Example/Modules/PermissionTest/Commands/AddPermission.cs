@@ -2,9 +2,9 @@
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using TnmsPluginFoundation.Extensions.Client;
-using TnmsPluginFoundation.Models.Admin;
 using TnmsPluginFoundation.Models.Command;
 using TnmsPluginFoundation.Models.Command.Validators;
+using Wuling.Abstract.Tianshi.Authority;
 
 namespace TnmsPluginFoundation.Example.Modules.PermissionTest.Commands;
 
@@ -30,7 +30,7 @@ public class AddPermission(IServiceProvider provider) : TnmsAbstractCommandBase(
         
         var permission = commandInfo.GetArg(1);
 
-        if (TnmsPlugin.AdminManager.AddPermissionToClient(client, permission) == PermissionModifyResult.Success)
+        if (TnmsPlugin.AdminManager.AddPermissionToPlayer(client.SteamId, permission) == AuthoritySaveResult.Success)
         {
             client.GetPlayerController()!.PrintToChat($"Added permission '{permission}' to client.");
         }

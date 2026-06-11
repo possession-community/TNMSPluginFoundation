@@ -2,9 +2,9 @@
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using TnmsPluginFoundation.Extensions.Client;
-using TnmsPluginFoundation.Models.Admin;
 using TnmsPluginFoundation.Models.Command;
 using TnmsPluginFoundation.Models.Command.Validators;
+using Wuling.Abstract.Tianshi.Authority;
 
 namespace TnmsPluginFoundation.Example.Modules.PermissionTest.Commands;
 
@@ -29,7 +29,7 @@ public class RemovePermission(IServiceProvider provider) : TnmsAbstractCommandBa
             return;
         var permission = commandInfo.GetArg(1);
 
-        if (TnmsPlugin.AdminManager.RemovePermissionFromClient(client, permission) == PermissionModifyResult.Success)
+        if (TnmsPlugin.AdminManager.RemovePermissionFromPlayer(client.SteamId, permission) == AuthoritySaveResult.Success)
         {
             client.GetPlayerController()!.PrintToChat($"Removed permission '{permission}' from client.");
         }

@@ -35,8 +35,8 @@ public abstract partial class TnmsPlugin
     {
         if  (client == null)
             return Localizer[localizationKey];
-        
-        return Localizer.ForClient(client, localizationKey);
+
+        return Localizer.ForPlayer(client.SteamId, localizationKey);
     }
     
     /// <summary>
@@ -50,7 +50,7 @@ public abstract partial class TnmsPlugin
     {
         if  (client == null)
             return Localizer[localizationKey, args];
-        
-        return Localizer.ForClient(client, localizationKey, args);
+
+        return Localizer.ForPlayer(client.SteamId, localizationKey, args);
     }
 }

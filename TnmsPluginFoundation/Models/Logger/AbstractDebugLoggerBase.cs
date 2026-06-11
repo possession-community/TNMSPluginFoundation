@@ -117,7 +117,7 @@ public abstract class AbstractDebugLoggerBase: IDebugLogger
                 if (client.IsFakeClient || client.IsHltv)
                     continue;
             
-                if (!TnmsPlugin.AdminManager.ClientHasPermission(client, RequiredFlagForPrintToConsole))
+                if (!TnmsPlugin.AdminManager.PlayerHasPermission(client.SteamId, RequiredFlagForPrintToConsole))
                     continue;
 
                 client.ConsolePrint(msg);

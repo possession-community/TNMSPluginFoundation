@@ -17,7 +17,7 @@ public class TargetTestCommand(IServiceProvider provider) : TnmsAbstractCommandB
 
     protected override ICommandValidator GetValidator() => new CompositeValidator()
         .Add(new ArgumentCountValidator(1, true))
-        .Add(new ExtendableTargetValidator(1, true));
+        .Add(new TargetValidator(1, true));
 
     protected override ValidationFailureResult OnValidationFailed(ValidationFailureContext context)
     {

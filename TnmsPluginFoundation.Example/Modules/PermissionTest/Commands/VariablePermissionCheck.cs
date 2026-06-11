@@ -27,7 +27,7 @@ public class VariablePermissionCheck(IServiceProvider provider) : TnmsAbstractCo
         if (client == null)
             return;
         
-        if (TnmsPlugin.AdminManager.ClientHasPermission(client, commandInfo.GetArg(1)))
+        if (TnmsPlugin.AdminManager.PlayerHasPermission(client.SteamId, commandInfo.GetArg(1)))
         {
             client.GetPlayerController()!.PrintToChat($"You have permission: {commandInfo.GetArg(1)}");
         }
