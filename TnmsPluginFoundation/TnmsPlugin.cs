@@ -12,7 +12,6 @@ using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
 using TnmsPluginFoundation.Interfaces;
 using TnmsPluginFoundation.Models.Command;
-using TnmsPluginFoundation.Models.Localization;
 using TnmsPluginFoundation.Models.Logger;
 using TnmsPluginFoundation.Models.Plugin;
 using Wuling.Abstract;
@@ -257,9 +256,7 @@ public abstract partial class TnmsPlugin: IModSharpModule
 
         AdminManager = Wuling.Authority;
         LocalizationPlatform = Wuling.Localizer;
-        // Wrap with color tag conversion to keep parity with the legacy
-        // TnmsLocalizationPlatform, which formatted translations at load time.
-        Localizer = new ColorFormattingStringLocalizer(LocalizationPlatform.CreateStringLocalizer(ModuleDirectory));
+        Localizer = LocalizationPlatform.CreateStringLocalizer(ModuleDirectory);
 
         var targetingManager = _sharedSystem.GetSharpModuleManager()
             .GetRequiredSharpModuleInterface<ITargetingManager>(ITargetingManager.Identity).Instance;
