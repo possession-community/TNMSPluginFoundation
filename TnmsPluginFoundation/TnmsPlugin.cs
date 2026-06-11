@@ -56,24 +56,29 @@ public abstract partial class TnmsPlugin: IModSharpModule
     /// </summary>
     internal static ISharedSystem StaticSharedSystem => _sharedSystem;
 
+    private static IModSharpModuleInterface<IWuling> _wulingInterface = null!;
+    private static IModSharpModuleInterface<ITargetingManager> _targetingManagerInterface = null!;
+
     /// <summary>
     /// Wuling framework facade. (Authority / Localizer / Registry / EventBus / etc.)
     /// </summary>
-    public static IWuling Wuling { get; private set; } = null!;
+    public static IWuling Wuling => _wulingInterface.Instance
+        ?? throw new InvalidOperationException("Wuling is not available! Make sure Wuling is installed!");
 
     /// <summary>
     /// ModSharp official targeting module. (Sharp.Modules.TargetingManager)
     /// </summary>
-    public static ITargetingManager TargetingManager { get; private set; } = null!;
+    public static ITargetingManager TargetingManager => _targetingManagerInterface.Instance
+        ?? throw new InvalidOperationException("TargetingManager is not available! Make sure Sharp.Modules.TargetingManager is installed!");
 
     /// <summary>
     /// Wuling Authority. (permission / can-target / immunity / group management)
     /// </summary>
-    public static IAuthority AdminManager { get; private set; } = null!;
+    public static IAuthority AdminManager => Wuling.Authority;
 
 
     public IStringLocalizer Localizer { get; private set; } = null!;
-    public ILocalizer LocalizationPlatform { get; private set; } = null!;
+    public ILocalizer LocalizationPlatform => Wuling.Localizer;
     public string ModuleDirectory { get; }
 
 
@@ -241,26 +246,23 @@ public abstract partial class TnmsPlugin: IModSharpModule
     /// <returns></returns>
     public void OnAllModulesLoaded()
     {
+        // Resolve module interfaces first so Localizer/AdminManager/TargetingManager
+        // are usable from TnmsAllPluginsLoaded and module AllPluginsLoaded callbacks.
+        _wulingInterface = _sharedSystem.GetSharpModuleManager()
+            .GetRequiredSharpModuleInterface<IWuling>(IWuling.Identity);
+        _targetingManagerInterface = _sharedSystem.GetSharpModuleManager()
+            .GetRequiredSharpModuleInterface<ITargetingManager>(ITargetingManager.Identity);
+
+        Localizer = LocalizationPlatform.CreateStringLocalizer(ModuleDirectory);
+
         LateRegisterPluginServices(ServiceCollection, ServiceProvider);
         RebuildServiceProvider();
         UpdateServices();
-        
+
         TnmsAllPluginsLoaded(_hotReload);
         CallModulesAllPluginsLoaded();
         ConVarConfigurationService.SaveAllConfigToFile();
         ConVarConfigurationService.ExecuteConfigs();
-
-        var wuling = _sharedSystem.GetSharpModuleManager()
-            .GetRequiredSharpModuleInterface<IWuling>(IWuling.Identity).Instance;
-        Wuling = wuling ?? throw new InvalidOperationException("Wuling is not found! Make sure Wuling is installed!");
-
-        AdminManager = Wuling.Authority;
-        LocalizationPlatform = Wuling.Localizer;
-        Localizer = LocalizationPlatform.CreateStringLocalizer(ModuleDirectory);
-
-        var targetingManager = _sharedSystem.GetSharpModuleManager()
-            .GetRequiredSharpModuleInterface<ITargetingManager>(ITargetingManager.Identity).Instance;
-        TargetingManager = targetingManager ?? throw new InvalidOperationException("TargetingManager is not found! Make sure Sharp.Modules.TargetingManager is installed!");
     }
 
     /// <summary>

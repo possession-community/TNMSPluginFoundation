@@ -19,8 +19,11 @@
             <PluginFiles Include="$(TargetDir)$(ProjectName).dll" />
             <!-- config.props uses embedded debug info, so no .pdb is produced -->
             <PluginFiles Include="$(TargetDir)$(ProjectName).pdb" Condition="Exists('$(TargetDir)$(ProjectName).pdb')" />
+            <PluginLangFiles Include="$(MSBuildProjectDirectory)\lang\**\*" />
         </ItemGroup>
         <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(MOD_SHARP_DIR)\modules\$(ProjectName)\reload" />
+        <!-- The reload mechanism only applies flat files, so lang goes straight to the module dir -->
+        <Copy SourceFiles="@(PluginLangFiles)" DestinationFolder="$(MOD_SHARP_DIR)\modules\$(ProjectName)\lang\%(RecursiveDir)" Condition="'@(PluginLangFiles)' != ''" />
         <Message Text="Successfully copied the plugin files" Importance="High" />
     </Target>
 </Project>

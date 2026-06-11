@@ -35,6 +35,9 @@ echo:
 REM Define projects to build (add/remove projects as needed)
 set PROJECTS=TnmsPluginFoundation.Example
 
+REM Define custom directories copied into each module output (e.g. lang)
+set CUSTOM_DIRS=lang
+
 REM Define shared projects in dependency order (base projects first)
 set SHARED_PROJECTS_PHASE1=TnmsPluginFoundation
 set SHARED_PROJECTS_PHASE2=
@@ -175,11 +178,14 @@ for %%P in (%PROJECTS%) do (
         echo Renaming appsettings.json for %%P...
         if exist ".build\modules\%%P\appsettings.json" move ".build\modules\%%P\appsettings.json" ".build\modules\%%P\appsettings.example.json"
         
-        REM Copy custom files that defined
+        REM Copy custom files that defined (project dir takes precedence over repo root)
         for %%C in (%CUSTOM_DIRS%) do (
-            if exist "%%C\" (
+            if exist "%%P\%%C\" (
                 echo Copying %%C files for %%P...
-                if exist "%%C\" xcopy "%%C\*" ".build/modules/%%P/%%C/" /E /I /Y
+                xcopy "%%P\%%C\*" ".build/modules/%%P/%%C/" /E /I /Y
+            ) else if exist "%%C\" (
+                echo Copying %%C files for %%P...
+                xcopy "%%C\*" ".build/modules/%%P/%%C/" /E /I /Y
             )
         )
         
