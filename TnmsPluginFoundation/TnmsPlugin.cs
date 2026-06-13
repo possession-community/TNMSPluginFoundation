@@ -253,7 +253,7 @@ public abstract partial class TnmsPlugin: IModSharpModule
         _targetingManagerInterface = _sharedSystem.GetSharpModuleManager()
             .GetRequiredSharpModuleInterface<ITargetingManager>(ITargetingManager.Identity);
 
-        Localizer = LocalizationPlatform.CreateStringLocalizer(ModuleDirectory);
+        Localizer = LocalizationPlatform.CreateStringLocalizer(ModuleDirectory, appendLangDir: true);
 
         LateRegisterPluginServices(ServiceCollection, ServiceProvider);
         RebuildServiceProvider();
