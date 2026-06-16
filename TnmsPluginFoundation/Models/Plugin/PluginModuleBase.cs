@@ -230,7 +230,7 @@ public abstract class PluginModuleBase(IServiceProvider serviceProvider, bool ho
     /// <param name="player">Player Instance</param>
     /// <param name="text">original text</param>
     /// <returns>Text combined with original text and prefix, returns translated module prefix if UseTranslationKeyInModuleChatPrefix is true</returns>
-    protected string GetTextWithModulePrefix(IGameClient? player, string text)
+    public string GetTextWithModulePrefix(IGameClient? player, string text)
     {
         if (!UseTranslationKeyInModuleChatPrefix)
             return $" {ModuleChatPrefix} {text}";
