@@ -46,6 +46,7 @@ public abstract partial class TnmsPlugin: IModSharpModule
 
         Logger = logger;
         GameData = _sharedSystem.GetModSharp().GetGameData();
+        SharpPath = sharpPath;
         AssetPath = Path.Combine(sharpPath, "assets");
     }
 
@@ -120,6 +121,11 @@ public abstract partial class TnmsPlugin: IModSharpModule
     /// </summary>
     public IGameData GameData { get; }
     
+    /// <summary>
+    /// Sharp root directory path (e.g. game/sharp/)
+    /// </summary>
+    public string SharpPath { get; }
+
     /// <summary>
     /// Asset path
     /// </summary>
