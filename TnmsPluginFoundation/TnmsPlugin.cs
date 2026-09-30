@@ -524,6 +524,15 @@ public abstract partial class TnmsPlugin: IModSharpModule
             return;
 
         TnmsCommandRegistrations.Add(command, (clientNames, serverNames));
+
+        try
+        {
+            command.OnRegistered();
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "An error occurred in OnRegistered of command '{cmdName}'", command.CommandName);
+        }
     }
     
     /// <summary>
@@ -569,6 +578,15 @@ public abstract partial class TnmsPlugin: IModSharpModule
         {
             SharedSystem.GetConVarManager().ReleaseCommand("ms_" + name);
             TnmsAbstractedServerCommands.Remove(name);
+        }
+
+        try
+        {
+            command.OnUnregistered();
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "An error occurred in OnUnregistered of command '{cmdName}'", command.CommandName);
         }
     }
 }

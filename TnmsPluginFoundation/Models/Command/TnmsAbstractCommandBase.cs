@@ -37,7 +37,22 @@ public abstract class TnmsAbstractCommandBase(IServiceProvider provider): Plugin
     public abstract TnmsCommandRegistrationType CommandRegistrationType { get; }
     
     /// <summary>
-    /// Default validation failure message 
+    /// Called once after this command is registered to ModSharp (name and aliases).
+    /// Not called if every name was already taken.
+    /// </summary>
+    protected internal virtual void OnRegistered()
+    {
+    }
+
+    /// <summary>
+    /// Called once after this command is removed from ModSharp, including on plugin unload.
+    /// </summary>
+    protected internal virtual void OnUnregistered()
+    {
+    }
+
+    /// <summary>
+    /// Default validation failure message
     /// </summary>
     protected virtual string CommonValidationFailureMessage => "Common.Validation.Failure";
 
