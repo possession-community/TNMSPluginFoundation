@@ -104,15 +104,13 @@ public static class PlayerUtil
     public static void SetPlayerName(IGameClient client, string playerName)
     {
         var playerController = client.GetPlayerController();
-        
+
         if (playerController == null)
             return;
-        
-        playerController.SetName(playerName);
 
-        // TODO() Is it required to implement Event to apply change immediately?
-        // var fakeEvent = new EventNextlevelChanged(false);
-        // fakeEvent.FireEvent(false);
+        // IBaseEntity.SetName sets the entity targetname; the shown name is the controller's PlayerName and the client's name.
+        playerController.PlayerName = playerName;
+        client.SetName(playerName);
     }
 
     
