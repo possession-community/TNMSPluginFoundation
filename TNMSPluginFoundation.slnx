@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TnmsPluginFoundation.Example/TnmsPluginFoundation.Example.csproj" />
+  <Project Path="TnmsPluginFoundation/TnmsPluginFoundation.csproj" />
+</Solution>
